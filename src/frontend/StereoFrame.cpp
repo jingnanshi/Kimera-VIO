@@ -69,19 +69,16 @@ void StereoFrame::initialize(const CameraParams &cam_param_left,
         UtilsOpenCV::Cvmat2Cal3_S2(left_frame_.cam_param_.P_);
     right_undistRectCameraMatrix_ =
         UtilsOpenCV::Cvmat2Cal3_S2(right_frame_.cam_param_.P_);
-    // TODO(Toni): remove assumption on stereo cameras being x-aligned!
     baseline_ =
         cam_param_left.body_Pose_cam_.between(cam_param_right.body_Pose_cam_)
-            .x();
+            .translation().norm();
   } else {
     // TODO(Toni): the undistRect maps should be computed once and cached!!
     computeRectificationParameters(&left_frame_.cam_param_,
                                    &right_frame_.cam_param_, &B_Pose_camLrect_);
-    // TODO REMOVE ASSUMPTION ON x aligned stereo camera, can't we just take the
-    // norm?
     baseline_ = left_frame_.cam_param_.body_Pose_cam_
                     .between(right_frame_.cam_param_.body_Pose_cam_)
-                    .x();
+                    .translation().norm();
     left_undistRectCameraMatrix_ =
         UtilsOpenCV::Cvmat2Cal3_S2(left_frame_.cam_param_.P_);
     right_undistRectCameraMatrix_ =
